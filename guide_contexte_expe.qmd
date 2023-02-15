@@ -1,0 +1,62 @@
+---
+title: "Guide de description du contexte expérimental en vigne"
+author : Delpuech, Xavier
+contributor: Dumas, Vincent;Cahurel, Jean-Yves;Gontier, Laure;Claverie, Marion;Charleroy, Arnaud
+date: 2023-02-15
+date-modified: 2023-02-15
+bibliography: references.bib
+format: html
+prefer-html: true
+editor: visual
+---
+
+```{r load_data}
+#| echo: false
+#| warning: false
+
+library(readxl)
+schema <- readxl::read_xlsx("experimental_context_description.xlsx")
+thesaurus <- readxl::read_xlsx("grapevine_experimental_thesaurus.xlsx")
+
+```
+
+Dans un objectif de faciliter le partage et l'interopérabilité des données expérimentales dans la filière viticole
+
+## Les champs descriptifs d'une expérimentation
+
+Une expérimentation est décrite par les champs suivants.
+
+```{r}
+#| echo: false
+#| warning: false
+#| label: tbl-metadata_expe
+#| tbl-cap: Metadonnées descriptives de l'expérimentation
+
+library(dplyr)
+library(kableExtra)
+
+metadata_expe <- schema %>%
+  filter(subcontext=="experimentation") %>%
+  select(label_fr,description_fr,example_fr,type, enum)
+
+kbl(metadata_expe) %>%
+  kable_classic()
+
+
+```
+
+## Glossaire
+
+```{r}
+#| echo: false
+#| warning: false
+
+description <- data.frame(variable = thesaurus$terme_fr,
+                           description = thesaurus$definition_fr)
+
+## to check
+explore::data_dict_md(iris,
+             title = "iris flower data set",
+             description = description,
+             output_dir = tempdir())
+```
