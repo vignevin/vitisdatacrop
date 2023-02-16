@@ -1,0 +1,58 @@
+---
+title: "Thesaurus vigne & vin"
+author : Delpuech, Xavier
+contributor: Dumas, Vincent;Cahurel, Jean-Yves;Gontier, Laure;Claverie, Marion;Charleroy, Arnaud
+date: 2023-02-16
+date-modified: 2023-02-15
+bibliography: references.bib
+format: html
+prefer-html: true
+editor: visual
+---
+
+## Introduction
+
+Ce document a pour objectif de définir certains termes utilisés par la communauté scientifique et technique vigne et vin pour faciliter le partage et la compréhension mutuelle.
+
+```{r load_data}
+#| echo: false
+#| warning: false
+
+library(readxl)
+thesaurus <- readxl::read_xlsx("grapevine_experimental_thesaurus.xlsx")
+```
+
+## Termes génériques
+
+```{r}
+#| echo: false
+#| warning: false
+#| label: tbl-generic
+#| tbl-cap: Termes génériques utilisés dans un contexte expérimental
+
+library(dplyr)
+library(kableExtra)
+glossary <- thesaurus %>%
+  filter(contexte_fr=="générique") %>%
+  select(terme_fr,definition_fr)
+
+kbl(glossary) %>%
+   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+## Termes au vignoble
+
+```{r}
+#| echo: false
+#| warning: false
+#| label: tbl-vignoble
+#| tbl-cap: Termes génériques utilisés sur le vignoble
+
+
+glossary <- thesaurus %>%
+  filter(contexte_fr=="vignoble") %>%
+  select(terme_fr,definition_fr)
+
+kbl(glossary) %>%
+   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```

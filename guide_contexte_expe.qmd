@@ -1,5 +1,5 @@
 ---
-title: "Guide de description du contexte expérimental en vigne"
+title: "Guide de description d'une expérimentation en vigne"
 author : Delpuech, Xavier
 contributor: Dumas, Vincent;Cahurel, Jean-Yves;Gontier, Laure;Claverie, Marion;Charleroy, Arnaud
 date: 2023-02-15
@@ -40,9 +40,34 @@ metadata_expe <- schema %>%
   select(label_fr,description_fr,example_fr,type, enum)
 
 kbl(metadata_expe) %>%
-  kable_classic()
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
 
+```
+
+## Les champs descriptifs d'une parcelle expérimentale
+
+Les champs descriptifs d'une parcelle expérimentale sont:
+
+```{r}
+#| echo: false
+#| warning: false
+#| label: tbl-metadata_plot
+#| tbl-cap: Metadonnées descriptives de la parcelle expérimentale
+
+library(dplyr)
+library(kableExtra)
+
+metadata_plot <- schema %>%
+  filter(subcontext=="plot") %>%
+  mutate(liste=enum) %>%
+  mutate(liste=gsub(x=enum,pattern=",",replacement=", ")) %>%
+  #mutate(liste=linebreak(liste)) %>%
+  select(label_fr,description_fr,example_fr,type, liste)
+
+
+kbl(metadata_plot,escape=F) %>%
+   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
 
 ## Glossaire
@@ -51,12 +76,9 @@ kbl(metadata_expe) %>%
 #| echo: false
 #| warning: false
 
-description <- data.frame(variable = thesaurus$terme_fr,
-                           description = thesaurus$definition_fr)
+glossary <- thesaurus %>%
+  select(terme_fr,definition_fr)
 
-## to check
-explore::data_dict_md(iris,
-             title = "iris flower data set",
-             description = description,
-             output_dir = tempdir())
+kbl(glossary) %>%
+   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
