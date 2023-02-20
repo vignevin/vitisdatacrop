@@ -13,7 +13,14 @@ number-sections: true
 crossref: 
   chapters: true
 bibliography: references.bib
-format: docx
+# format: gfm #for READMR
+# format: html
+format:
+   docx:
+     toc: true
+     toc-depth: 2
+     toc-title: Table des matières
+     number-sections: true
 prefer-html: true
 editor: visual
 ---
@@ -55,9 +62,17 @@ Une définition de chaque terme est proposé dans le glossaire.
 
 Ce standard a été proposé dans le cadre du projet VITIS DATA CROP (CASDAR RT 2020). Ce projet a pour objectif de proposer ensemble cohérent d'outils et des méthodes pour améliorer l'interopérabilité, le partage et l'ouverture des données. Un atelier autour du vocabulaire expérimental s'est tenu le 19 janvier 2023 lors du [séminaire](https://vignevin.quarto.pub/seminaire-data-2023/) organisé dans le cadre de ce projet. Cet atelier a permis de collecter un ensemble de terme dans différents contexte.
 
-Ces éléments ont été complétés par une revue de l'existant, en analysant les métadonnées proposées dans différents cadres : Silex Porte-greffe, Sinfonia,
+Ces éléments ont été complétés par une revue de l'existant, en analysant les métadonnées proposées dans les systèmes d'informations existants :
 
-L'ensemble a été soumis à revue critique à la communauté scientifique et technique vigne.
+-   Silex Porte-greffe
+-   Oscar
+-   Ocesar
+-   (VitisExplorer)
+-   (Sinfonia)
+
+Cette revue a été complétée par des approches similaires conduites lors de projets de mise en réseau : (Recap&Dep).
+
+L'objectif ici n'est pas d'être exhaustif sur les métadonnées existantes dans ces différents projets, mais de proposer une sélection de métadonnées en recherchant un consensus de la communauté scientifique et technique vigne.
 
 # Le contexte général
 
@@ -70,16 +85,42 @@ Un projet (sous entendu "de recherche") est le cadre général dans lequel s'ins
 #| warning: false
 #| label: tbl-metadata_prj
 #| tbl-cap: Metadonnées descriptives du projet
+#| column: page
 
 library(dplyr)
 library(kableExtra)
+library(knitr)
 
-metadata_prj <- schema %>%
-  filter(subcontext=="project") %>%
-  select(label_fr,description_fr,example_fr,type, enum)
+knit_table <- function(df,context,nchar_max=300)
+  {
+   options(knitr.kable.NA = '')
+   df$example_fr <- substr(df$example_fr,start=1,stop=nchar_max) # to limit text size to 500 characters
+   sel<-(!is.na(df$example_fr)&nchar(df$example_fr)==nchar_max)
+   df$example_fr[sel]<-paste0(df$example_fr[sel]," [...]") # to mark truncated texts
+  df %>%
+      filter(subcontext==context) %>%
+      select(label_fr,description_fr,example_fr,type, enum) %>%
+      #mutate_if(is.numeric,round,digits=1) %>%
+      mutate(enum=gsub(x=enum,pattern=",",replacement="<br>")) %>%
+      rename("Label"="label_fr",
+             "Description"="description_fr",
+             "Exemple"="example_fr",
+             "Type"="type",
+             "Liste"="enum") %>%
+      select(where(~ !(all(is.na(.)) | all(. == "")))) %>% # remove empty col
+      kable("html", escape = F) %>%
+      kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                    full_width = T)
+}
 
-kbl(metadata_prj) %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+knit_table(df=schema,context="project")
+
+
+# metadata_prj <- schema %>%
+#   filter(subcontext=="project") %>%
+#   select(label_fr,description_fr,example_fr,type, enum)
+# kbl(metadata_prj) %>%
+#   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
 ```
 
@@ -92,16 +133,9 @@ Généralement conduite au sein d'un projet, une expérimentation est une activi
 #| warning: false
 #| label: tbl-metadata_expe
 #| tbl-cap: Metadonnées descriptives de l'expérimentation
+#| column: page
 
-library(dplyr)
-library(kableExtra)
-
-metadata_expe <- schema %>%
-  filter(subcontext=="experimentation") %>%
-  select(label_fr,description_fr,example_fr,type, enum)
-
-kbl(metadata_expe) %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+knit_table(df=schema,context="experimentation")
 
 ```
 
@@ -132,20 +166,9 @@ Le dispositif en lui-même peut être décrit par quelques métadonnées (@tbl-m
 #| warning: false
 #| label: tbl-metadata_design
 #| tbl-cap: Metadonnées descriptives du plan d'expérience
+#| column: page
 
-library(dplyr)
-library(kableExtra)
-
-metadata_design <- schema %>%
-  filter(subcontext=="design") %>%
-  mutate(liste=enum) %>%
-  mutate(liste=gsub(x=enum,pattern=",",replacement=", ")) %>%
-  #mutate(liste=linebreak(liste)) %>%
-  select(label_fr,description_fr,example_fr,type, liste)
-
-
-kbl(metadata_design,escape=F) %>%
-   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+knit_table(df=schema,context="design")
 ```
 
 Dans le cadre d'une expérimentation en vigne, chaque placette (unité d'observation) peut être définie par quelques champs de métadonnées proposés dans le @tbl-metadata_subplot ci-dessous.
@@ -156,22 +179,24 @@ Dans le cadre d'une expérimentation en vigne, chaque placette (unité d'observa
 #| label: tbl-metadata_subplot
 #| tbl-cap: Metadonnées descriptives de la parcelle expérimentale
 
-library(dplyr)
-library(kableExtra)
-
-metadata_subplot <- schema %>%
-  filter(subcontext=="subplot") %>%
-  mutate(liste=enum) %>%
-  mutate(liste=gsub(x=enum,pattern=",",replacement=", ")) %>%
-  #mutate(liste=linebreak(liste)) %>%
-  select(label_fr,description_fr,example_fr,type, liste)
-
-
-kbl(metadata_subplot,escape=F) %>%
-   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+knit_table(df=schema,context="subplot")
 ```
 
 # Le contexte viticole
+
+## L'exploitation agricole
+
+Les métadonnées d'une exploitation agricole sont proposées dans le @tbl-metadata_estate ci-dessous.
+
+```{r}
+#| echo: false
+#| warning: false
+#| label: tbl-metadata_estate
+#| tbl-cap: Metadonnées descriptives de l'exploitation
+#| column: page
+
+knit_table(df=schema,context="estate")
+```
 
 ## La parcelle expérimentale
 
@@ -182,20 +207,8 @@ Les métadonnées d'une parcelle expérimentale sont proposées dans le @tbl-met
 #| warning: false
 #| label: tbl-metadata_plot
 #| tbl-cap: Metadonnées descriptives de la parcelle expérimentale
-
-library(dplyr)
-library(kableExtra)
-
-metadata_plot <- schema %>%
-  filter(subcontext=="plot") %>%
-  mutate(liste=enum) %>%
-  mutate(liste=gsub(x=enum,pattern=",",replacement=", ")) %>%
-  #mutate(liste=linebreak(liste)) %>%
-  select(label_fr,description_fr,example_fr,type, liste)
-
-
-kbl(metadata_plot,escape=F) %>%
-   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+#| column: page
+knit_table(df=schema,context="plot")
 ```
 
 ## Le sol
@@ -207,20 +220,8 @@ Avoir quelques éléments sur le sol est généralement pertinent pour mieux app
 #| warning: false
 #| label: tbl-metadata_soil
 #| tbl-cap: Metadonnées descriptives du sol de la parcelle
-
-library(dplyr)
-library(kableExtra)
-
-metadata_soil <- schema %>%
-  filter(subcontext=="soil") %>%
-  mutate(liste=enum) %>%
-  mutate(liste=gsub(x=enum,pattern=",",replacement=", ")) %>%
-  #mutate(liste=linebreak(liste)) %>%
-  select(label_fr,description_fr,example_fr,type, liste)
-
-
-kbl(metadata_soil,escape=F) %>%
-   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+#| column: page
+knit_table(df=schema,context="soil")
 ```
 
 ## L'itinéraire technique
@@ -232,20 +233,8 @@ Tout comme le sol, la connaissance de l'itinéraire technique est utile pour mie
 #| warning: false
 #| label: tbl-metadata_itk
 #| tbl-cap: Metadonnées descriptives de l'itinéraire technique sur la parcelle
-
-library(dplyr)
-library(kableExtra)
-
-metadata_itk <- schema %>%
-  filter(subcontext=="itk") %>%
-  mutate(liste=enum) %>%
-  mutate(liste=gsub(x=enum,pattern=",",replacement=", ")) %>%
-  #mutate(liste=linebreak(liste)) %>%
-  select(label_fr,description_fr,example_fr,type, liste)
-
-
-kbl(metadata_itk,escape=F) %>%
-   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+#| column: page
+knit_table(df=schema,context="itk")
 ```
 
 # Glossaire
@@ -253,6 +242,8 @@ kbl(metadata_itk,escape=F) %>%
 ```{r}
 #| echo: false
 #| warning: false
+#| column: page
+
 library(dplyr)
 library(kableExtra)
 termes<-c("parcelle","dispositif expérimental","	
