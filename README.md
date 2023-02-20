@@ -1,4 +1,4 @@
-Guide pour la description d’une expérimentation en vigne
+Guide pour la description d’une expérimentation en vigne [PROVISOIRE]
 ================
 Delpuech, Xavier[^1]Dumas, VincentCahurel, Jean-YvesGontier,
 LaureClaverie, MarionCharleroy, Arnaud
