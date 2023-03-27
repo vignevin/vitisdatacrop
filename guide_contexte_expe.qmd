@@ -1,7 +1,53 @@
 ---
 title: "Guide pour la description d'une expérimentation en vigne"
-author: Delpuech, Xavier^[xavier.delpuech@vignevin.com]
-contributor: "Dumas, Vincent ; Cahurel, Jean-Yves ; Gontier, Laure ; Claverie, Marion ; Charleroy, Arnaud"
+author: 
+  - name: Xavier Delpuech
+    corresponding: true
+    orcid: 0000-0001-7278-3209
+    email: xavier.delpuech@vignevin.com
+    affiliations:
+      - ref: ifv
+  - name: Vincent Dumas
+    affiliations:
+      - ref: inrae
+  - name: Jean-Yves Cahurel
+    affiliations:
+      - ref: ifv
+  - name: Laure Gontier
+    affiliations:
+      - ref: ifv
+  - name: Marion Claverie
+    affiliations:
+      - ref: ifv
+  - name: Arnaud Charleroy
+    affiliations:
+      - ref: inrae
+  - name: Viviane Bécart
+    affiliations:
+      - ref: sgvrcdr
+  - name: Romain Lacroix
+    affiliations:
+      - ref: sgvrcdr
+  - name: Eric Duchêne
+    affiliations:
+      - ref: inrae
+  - name: Nathalie Ollat
+    affiliations:
+      - ref: inrae
+  - name: Joseph Tran
+    affiliations:
+      - ref: inrae    
+  
+affiliations:
+  - id: ifv
+    name: Institut Français de la Vigne et du Vin
+  - id: inrae
+    name: INRAE
+  - id: sgvrcdr
+    name: Syndicat Général des Vignerons Réunis des Côtes du Rhône
+filters: 
+  - authors-block
+  
 date: 2023-02-15
 date-modified: 2023-02-17
 number-sections: true
@@ -44,7 +90,7 @@ A noter qu'il existe des standards de description des ressources plus génériqu
 
 -   sa signification
 -   le type de contenu : texte, nombre, date
--   son format, par exemple pour les dates AAA-MM-DD
+-   son format, par exemple pour les dates AAAA-MM-DD
 -   les valeurs possibles le cas échéant (liste de choix)
 -   un niveau d'obligation
 
@@ -56,7 +102,7 @@ Une définition des termes principaux est proposée dans le glossaire.
 
 # Contexte et sources
 
-Ce standard a été proposé dans le cadre du projet VITIS DATA CROP (CASDAR RT 2020). Ce projet a pour objectif de proposer ensemble cohérent d'outils et des méthodes pour améliorer l'interopérabilité, le partage et l'ouverture des données. Un atelier autour du vocabulaire expérimental s'est tenu le 19 janvier 2023 lors du [séminaire](https://vignevin.quarto.pub/seminaire-data-2023/) organisé dans le cadre de ce projet. Cet atelier a permis de collecter un ensemble de terme dans différents contexte.
+Ce standard a été proposé dans le cadre du projet VITIS DATA CROP (CASDAR RT 2020). Ce projet a pour objectif de proposer un ensemble cohérent d'outils et des méthodes pour améliorer l'interopérabilité, le partage et l'ouverture des données. Un atelier autour du vocabulaire expérimental s'est tenu le 19 janvier 2023 lors du [séminaire](https://vignevin.quarto.pub/seminaire-data-2023/) organisé dans le cadre de ce projet. Cet atelier a permis de collecter un ensemble de termes dans différents contextes.
 
 Ces éléments ont été complétés par une revue de l'existant, en analysant les métadonnées proposées dans les systèmes d'informations existants :
 
@@ -64,6 +110,7 @@ Ces éléments ont été complétés par une revue de l'existant, en analysant l
 -   [Oscar](https://observatoire-cepages-resistants.fr/) : dispositif participatif, constitué d'un réseau de parcelles en production plantées par les viticulteurs et suivis par des techniciens. Une base de données regroupant les informations est stockée sur la plateforme Epicure de l'IFV.
 -   [Ocesar](https://centredurose.fr/le-programme-du-centre-du-rose/projet-cepages-ocesar/) : système d'information centralisant les informations issues du réseau d'observations régional des parcelles de variétés innovantes, en région SUD.
 -   Sinfonia : système d'information IFV pour la gestion des données expérimentales vigne et vin
+-   [Adonis](https://www6.inrae.fr/adonis) : outil de collecte de données expérimentale INRAE
 -   (VitisExplorer)
 
 Cette revue a été complétée par des approches similaires conduites lors de projets de mise en réseau : Recap&Dep (Projet PNDV) ou le format MIAPPE, plus générique ([@Krajewski.2015]).
@@ -76,13 +123,13 @@ L'objectif n'est pas d'être exhaustif sur les métadonnées existantes dans ces
 
 ## Le projet
 
-Un projet (sous entendu "de recherche") est le cadre général dans lequel s'inscrivent des activités de recherche, dont en particulier une ou plusieurs expérimentations. Connaitre le projet permet d'avoir une vision d'ensemble des activités conduites et de rechercher des documents ou compléments d'informations sur le contexte de l'étude. La connaissance du support financier peut aussi être importante pour définir le statut des données et leur vocation ou non à être ouverte (qui peut être précisé dans le plan de gestion de données du projet). Les métadonnées descriptives du projet sont proposées dans @tbl-metadata_prj.
+Un projet (sous entendu "de recherche") est le cadre général dans lequel s'inscrivent des activités de recherche, dont en particulier une ou plusieurs expérimentations. Connaître le projet permet d'avoir une vision d'ensemble des activités conduites et de rechercher des documents ou compléments d'informations sur le contexte de l'étude. La connaissance du support financier peut aussi être importante pour définir le statut des données et leur vocation ou non à être ouvertes (qui peut être précisé dans le plan de gestion de données du projet). Les métadonnées descriptives du projet sont proposées dans @tbl-metadata_prj.
 
 ```{r}
 #| echo: false
 #| warning: false
 #| label: tbl-metadata_prj
-#| tbl-cap: Metadonnées descriptives du projet
+#| tbl-cap: Métadonnées descriptives du projet
 #| column: page
 
 library(dplyr)
@@ -130,7 +177,7 @@ Généralement conduite au sein d'un projet, une expérimentation est une activi
 #| echo: false
 #| warning: false
 #| label: tbl-metadata_expe
-#| tbl-cap: Metadonnées descriptives de l'expérimentation
+#| tbl-cap: Métadonnées descriptives de l'expérimentation
 #| column: page
 
 knit_table(df=schema,context="experimentation")
@@ -143,9 +190,13 @@ knit_table(df=schema,context="experimentation")
 
 Au vignoble , l'expérimentation est généralement mis en place sur une parcelle ou unité culturale. Le dispositif expérimental est mis en place sur tout ou partie de la parcelle (@fig-dispositifexpe), avec laquelle il partage un certain nombre de caractéristiques en dehors des traitements appliqués dans le cadre de l'expérimentation.
 
-L'ensemble des unités expérimentales définit le dispositif expérimental. Chaque unité expérimentale reçoit un traitement, modalité ou combinaison de modalités des facteurs étudiés. Néanmoins, l'unité d'observation peut-être restreinte à une sous-partie de l'unité expérimentale (@fig-disp2). En vigne, le terme de "placette" est souvent utilisé pour l'unité d'observation. Enfin, chaque placette est constituée d'un ensemble de plants de vigne, aussi appelés pieds ou souches.
+On appelle traitement toute combinaison de niveaux ou de modalités des facteurs étudiés. Si un seul facteur est étudié, il y a identité entre un traitement et un niveau.
 
-Parmi les traitements, le témoin a une définition qui peut être variable selon les objectifs de l'expérience. On pourra préciser en particulier s'il s'agit d'un témoin non traité dans le cadre d'un essai d'évaluation d'efficacité biologique.
+La parcelle unitaire (ou élémentaire) est la plus petite unité expérimentale qui reçoit un traitement. Dans les essais au champ, elle est constituée d'une certaine étendue de terrain et d'un certain nombre de plants. L'ensemble des parcelles unitaires définit le dispositif expérimental.
+
+L'unité d'observation peut-être restreinte à une sous-partie de la parcelle unitaire (@fig-disp2). En vigne, le terme de "placette" est souvent utilisé pour l'unité d'observation. Enfin, chaque placette est constituée d'un ensemble de plants de vigne, aussi appelés pieds, souches ou ceps.
+
+Parmi les traitements, attention au terme générique "témoin" , dont la nature peut varier suivant les objectifs de l'expérience. Suivant les cas, il peut s'agir d'un témoin avec les pratiques du viticulteurs, un témoin sans apport, et dans les essais de protection phytosanitaire on parle de témoin de vraisemblance ou de témoin non traité (ou TNT). Il est donc nécessaire de décrire précisément le traitement "Témoin" pour éviter toute mauvaise interprétation des résultats.
 
 ::: {#fig-dispositifexpe layout-ncol="2"}
 ![Vue d'ensemble](DispositifExpe1.png){#fig-disp1}
@@ -157,25 +208,37 @@ Exemple de dispositif expérimental au vignoble
 
 ## Les métadonnées du plan d'expérience
 
+Les facteurs étudiés et leurs niveaux (ou modalités) sont décrits indépendamment du plan d'expérience (@tbl-metadata_factor).
+
+```{r}
+#| echo: false
+#| warning: false
+#| label: tbl-metadata_factor
+#| tbl-cap: Description des facteurs étudiés
+#| column: page
+
+knit_table(df=schema,context="factor")
+```
+
 Le dispositif en lui-même peut être décrit par quelques métadonnées (@tbl-metadata_design).
 
 ```{r}
 #| echo: false
 #| warning: false
 #| label: tbl-metadata_design
-#| tbl-cap: Metadonnées descriptives du plan d'expérience
+#| tbl-cap: Description du plan d'expérience
 #| column: page
 
 knit_table(df=schema,context="design")
 ```
 
-Dans le cadre d'une expérimentation en vigne, chaque placette (unité d'observation) peut être définie par quelques champs de métadonnées proposés dans le @tbl-metadata_subplot ci-dessous.
+Chaque parcelle unitaire (ou élémentaire) peut être définie par quelques champs de métadonnées proposés dans le @tbl-metadata_subplot ci-dessous. Les coordonnées relatives des parcelles unitaires peuvent être précisées mais dépendent du point de référence choisi par l'expérimentateur, souvent pour des considérations pratiques (accès de la parcelle). Les renseigner permet toutefois de générer le plan d'expérience et de tenir compte de leur position relative dans l'espace pour une représentation et spatiales des données.
 
 ```{r}
 #| echo: false
 #| warning: false
 #| label: tbl-metadata_subplot
-#| tbl-cap: Metadonnées descriptives de la placette expérimentale
+#| tbl-cap: Métadonnées descriptives de la parcelle unitaire
 
 knit_table(df=schema,context="subplot")
 ```
@@ -186,12 +249,12 @@ D'autre part, quelques éléments sur le type de suivi réalisé peuvent être p
 #| echo: false
 #| warning: false
 #| label: tbl-metadata_monitoring
-#| tbl-cap: Metadonnées descriptives du suivi expérimental
+#| tbl-cap: Métadonnées descriptives du suivi expérimental
 
 knit_table(df=schema,context="monitoring")
 ```
 
-Le jeu de données lui-même devra être complété par un dictionnaire de données, explicitant les variables mesurés. Ces variables doivent être à chaque fois que c'est possible reliées à la Vitis Ontology ([@duchene:hal-02947459]).
+Le jeu de données lui-même devra être complété par un dictionnaire de données, explicitant les variables mesurées. Ces variables doivent être à chaque fois que c'est possible reliées à la Vitis Ontology ([@duchene:hal-02947459]).
 
 # Le contexte viticole
 
@@ -203,7 +266,7 @@ Les métadonnées d'une exploitation agricole sont proposées dans le @tbl-metad
 #| echo: false
 #| warning: false
 #| label: tbl-metadata_estate
-#| tbl-cap: Metadonnées descriptives de l'exploitation
+#| tbl-cap: Métadonnées descriptives de l'exploitation
 #| column: page
 
 knit_table(df=schema,context="estate")
@@ -217,7 +280,7 @@ Les métadonnées d'une parcelle expérimentale sont proposées dans le @tbl-met
 #| echo: false
 #| warning: false
 #| label: tbl-metadata_plot
-#| tbl-cap: Metadonnées descriptives de la parcelle expérimentale
+#| tbl-cap: Métadonnées descriptives de la parcelle expérimentale
 #| column: page
 knit_table(df=schema,context="plot")
 ```
@@ -230,7 +293,7 @@ Avoir quelques éléments sur le sol est généralement pertinent pour mieux app
 #| echo: false
 #| warning: false
 #| label: tbl-metadata_soil
-#| tbl-cap: Metadonnées descriptives du sol de la parcelle
+#| tbl-cap: Métadonnées descriptives du sol de la parcelle
 #| column: page
 knit_table(df=schema,context="soil")
 ```
@@ -243,7 +306,7 @@ Tout comme le sol, la connaissance de l'itinéraire technique est utile pour mie
 #| echo: false
 #| warning: false
 #| label: tbl-metadata_itk
-#| tbl-cap: Metadonnées descriptives de l'itinéraire technique sur la parcelle
+#| tbl-cap: Métadonnées descriptives de l'itinéraire technique sur la parcelle
 #| column: page
 knit_table(df=schema,context="itk")
 ```
@@ -252,7 +315,6 @@ knit_table(df=schema,context="itk")
 
 ::: {#refs}
 :::
-
 
 # Glossaire
 
@@ -263,10 +325,9 @@ knit_table(df=schema,context="itk")
 
 library(dplyr)
 library(kableExtra)
-termes<-c("parcelle","dispositif expérimental","	
-unité expérimentale","traitement","boc","protocole",
+termes<-c("parcelle","dispositif expérimental","parcelle unitaire","traitement","boc","protocole",
           "unité d'observation","placette",
-          "modalité","facteur",
+          "modalité","facteur", "témoin",
           "témoin non traité (TNT)",
           "projet","expérimentation",
           "plan de gestion de données","jeu de données","dictionnaire de données")
@@ -280,4 +341,3 @@ glossary <- glossary[order(glossary$Terme),]
 kbl(glossary) %>%
    kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
-
