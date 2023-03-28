@@ -243,17 +243,6 @@ Chaque parcelle unitaire (ou élémentaire) peut être définie par quelques cha
 knit_table(df=schema,context="subplot")
 ```
 
-D'autre part, quelques éléments sur le type de suivi réalisé peuvent être précisés (@tbl-metadata_monitoring).
-
-```{r}
-#| echo: false
-#| warning: false
-#| label: tbl-metadata_monitoring
-#| tbl-cap: Métadonnées descriptives du suivi expérimental
-
-knit_table(df=schema,context="monitoring")
-```
-
 Le jeu de données lui-même devra être complété par un dictionnaire de données, explicitant les variables mesurées. Ces variables doivent être à chaque fois que c'est possible reliées à la Vitis Ontology ([@duchene:hal-02947459]).
 
 # Le contexte viticole
