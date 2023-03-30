@@ -49,7 +49,7 @@ filters:
   - authors-block
   
 date: 2023-02-15
-date-modified: 2023-02-17
+date-modified: 2023-03-30
 number-sections: true
 crossref: 
   chapters: true
@@ -57,11 +57,11 @@ bibliography: references.bib
 # format: gfm #for READMR
 # format: html
 format:
-   docx:
-     toc: true
-     toc-depth: 2
-     toc-title: Table des matières
-     number-sections: true
+  docx:
+    toc: true
+    toc-depth: 2
+    toc-title: Table des matières
+    number-sections: true
 prefer-html: true
 editor: visual
 lang: fr
@@ -142,20 +142,25 @@ knit_table <- function(df,context,nchar_max=300)
    df$example_fr <- substr(df$example_fr,start=1,stop=nchar_max) # to limit text size to 500 characters
    sel<-(!is.na(df$example_fr)&nchar(df$example_fr)==nchar_max)
    df$example_fr[sel]<-paste0(df$example_fr[sel]," [...]") # to mark truncated texts
-  df %>%
+  df <- df %>%
       filter(subcontext==context) %>%
-      select(label_fr,description_fr,example_fr,type, enum) %>%
+      select(label_fr,description_fr,example_fr,enum,priority,order) %>%
       #mutate_if(is.numeric,round,digits=1) %>%
       mutate(enum=gsub(x=enum,pattern=",",replacement="<br>")) %>%
       rename("Label"="label_fr",
              "Description"="description_fr",
              "Exemple"="example_fr",
-             "Type"="type",
+             #"Type"="type",
              "Liste"="enum") %>%
+     arrange(order)
+  
+   df %>% # mise en forme
+      select(!"priority"&!"order") %>% # suppression colonne priority
       select(where(~ !(all(is.na(.)) | all(. == "")))) %>% # remove empty col
       kable("html", escape = F) %>%
       kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
-                    full_width = T)
+                    full_width = T) %>%
+      row_spec(which(df$priority == 1), background = "#b3ffcc",bold=T) ## fond vert sur les donnees obligatoires
 }
 
 knit_table(df=schema,context="project")
@@ -206,9 +211,9 @@ Parmi les traitements, attention au terme générique "témoin" , dont la nature
 Exemple de dispositif expérimental au vignoble
 :::
 
-## Les métadonnées du plan d'expérience
+## Le plan d'expérience
 
-Les facteurs étudiés et leurs niveaux (ou modalités) sont décrits indépendamment du plan d'expérience (@tbl-metadata_factor).
+Les facteurs étudiés et leurs niveaux (ou modalités) sont décrits indépendamment du plan d'expérience (@tbl-metadata_factor). Une attention particulière doit être accordée à la description des facteurs.
 
 ```{r}
 #| echo: false
@@ -261,6 +266,12 @@ Les métadonnées d'une exploitation agricole sont proposées dans le @tbl-metad
 knit_table(df=schema,context="estate")
 ```
 
+::: callout-important
+## Données à caractère personnel
+
+Attention, certaines données (noms, géolocalisation précise des parcelles) peuvent être des données à caractère personnel (DCP) et dans ce cas doivent respecter le Règlement Général sur la Protection des Données (RGPD). Un des principes du RGPD est de recueillir le consentement explicite et éclairée des personnes pour tout traitement des données à caractère personnel. En l'absence de ce consentement, il faudra **supprimer** ou **anonymiser** les DCP.
+:::
+
 ## La parcelle expérimentale
 
 Les métadonnées d'une parcelle expérimentale sont proposées dans le @tbl-metadata_plot ci-dessous.
@@ -276,7 +287,7 @@ knit_table(df=schema,context="plot")
 
 ## Le sol
 
-Avoir quelques éléments sur le sol est généralement pertinent pour mieux appréhender le contexte de production. Les métadonnées liées au sol sont proposées dans le @tbl-metadata_soil ci-dessous.
+Avoir quelques éléments sur le sol est généralement pertinent pour mieux appréhender le contexte de production. Les métadonnées liées au sol sont proposées dans le @tbl-metadata_soil ci-dessous. Les analyses de sol peuvent être fournies en document complémentaire.
 
 ```{r}
 #| echo: false
@@ -289,7 +300,9 @@ knit_table(df=schema,context="soil")
 
 ## L'itinéraire technique
 
-Tout comme le sol, la connaissance de l'itinéraire technique est utile pour mieux comprendre les résultats. Les métadonnées liées à l'itinéraire technique sont proposées dans le @tbl-metadata_itk ci-dessous, à noter que l'itinéraire technique pouvant varier d'une année sur l'autre, il est nécessaire de les compléter pour chaque millésime suivi.
+Tout comme le sol, la connaissance de l'itinéraire technique est utile pour mieux comprendre les résultats. Les métadonnées liées à l'itinéraire technique sont proposées dans le @tbl-metadata_itk ci-dessous. L'itinéraire technique pouvant toutefois évoluer au cours d'un essai suivi sur plusieurs années, il est possible de lui donner un millésime de début et un de fin.
+
+Les données complètes de traçabilité de l'itinéraire technique (dates des interventions, matériel, produits utilisées...) peuvent être fournies en fichier(s) complémentaire(s), de préférence en utilisant les standards existants comme celui proposé par AgroEDI (format [DAPLOS](https://agroedieurope.fr/workgroup/tracabilite-des-productions-vegetales/fiche-parcellaire-grandes-cultures-message-edifact-daplos/) ou [e-DAPLOS](https://agroedieurope.fr/workgroup/tracabilite-des-productions-vegetales/fiche-parcellaire-edaplos/)). Cela peut aussi être plus simplement une exportation pdf issu d'un logiciel de traçabilité comme MesParcelles.
 
 ```{r}
 #| echo: false
@@ -300,7 +313,30 @@ Tout comme le sol, la connaissance de l'itinéraire technique est utile pour mie
 knit_table(df=schema,context="itk")
 ```
 
-# References
+## Les conditions météorologiques
+
+Les conditions météorologiques lors des essais au vignoble peuvent être caractérisées de manière plus ou moins précise :
+
+-   à partir d'indicateurs synthétiques du millésime, comme une somme de pluie, une température moyenne ou un bilan hydrique simplifié. Ces indicateurs doivent être définis ultérieurement.
+
+-   avec un jeu de données météo au pas quotidien, voire horaire suivant les essais.
+
+Les évènements climatiques majeurs seront déclarées comme évènements.
+
+## Les évènements
+
+Les évènements sont des évènements ponctuels se produisant au cours d'une expérience et pouvant avoir un impact sur les données enregistrées. Ces évènements peuvent être planifiés (par exemple une date de semis) ou inattendus (par exemple, des dommages à une expérimentation au champ causés par des animaux sauvages, un accident climatique). Leur déclaration se fait sur le modèle présenté ci-dessous (@tbl-metadata_event).
+
+```{r}
+#| echo: false
+#| warning: false
+#| label: tbl-metadata_event
+#| tbl-cap: Description d'un évènement survenu lors de l'expérimentation
+#| column: page
+knit_table(df=schema,context="event")
+```
+
+# Références
 
 ::: {#refs}
 :::
