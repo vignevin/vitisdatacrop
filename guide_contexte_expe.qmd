@@ -195,13 +195,11 @@ knit_table(df=schema,context="experimentation")
 
 Au vignoble , l'expérimentation est généralement mis en place sur une parcelle ou unité culturale. Le dispositif expérimental est mis en place sur tout ou partie de la parcelle (@fig-dispositifexpe), avec laquelle il partage un certain nombre de caractéristiques en dehors des traitements appliqués dans le cadre de l'expérimentation.
 
-On appelle traitement toute combinaison de niveaux ou de modalités des facteurs étudiés. Si un seul facteur est étudié, il y a identité entre un traitement et un niveau.
+On appelle "traitement expérimental" toute combinaison de niveaux ou de modalités des facteurs étudiés. Si un seul facteur est étudié, il y a identité entre un traitement et un niveau.
 
-La parcelle unitaire (ou élémentaire) est la plus petite unité expérimentale qui reçoit un traitement. Dans les essais au champ, elle est constituée d'une certaine étendue de terrain et d'un certain nombre de plants. L'ensemble des parcelles unitaires définit le dispositif expérimental.
+La "parcelle unitaire" (ou élémentaire) est la plus petite unité expérimentale qui reçoit un traitement. Dans les essais au champ, elle est constituée d'une certaine étendue de terrain et d'un certain nombre de plants. L'ensemble des parcelles unitaires définit le "dispositif expérimental".
 
 L'unité d'observation peut-être restreinte à une sous-partie de la parcelle unitaire (@fig-disp2). En vigne, le terme de "placette" est souvent utilisé pour l'unité d'observation. Enfin, chaque placette est constituée d'un ensemble de plants de vigne, aussi appelés pieds, souches ou ceps.
-
-Parmi les traitements, attention au terme générique "témoin" , dont la nature peut varier suivant les objectifs de l'expérience. Suivant les cas, il peut s'agir d'un témoin avec les pratiques du viticulteurs, un témoin sans apport, et dans les essais de protection phytosanitaire on parle de témoin de vraisemblance ou de témoin non traité (ou TNT). Il est donc nécessaire de décrire précisément le traitement "Témoin" pour éviter toute mauvaise interprétation des résultats.
 
 ::: {#fig-dispositifexpe layout-ncol="2"}
 ![Vue d'ensemble](DispositifExpe1.png){#fig-disp1}
@@ -214,6 +212,8 @@ Exemple de dispositif expérimental au vignoble
 ## Le plan d'expérience
 
 Les facteurs étudiés et leurs niveaux (ou modalités) sont décrits indépendamment du plan d'expérience (@tbl-metadata_factor). Une attention particulière doit être accordée à la description des facteurs.
+
+Parmi les traitements, attention au terme générique "témoin" , dont la nature peut varier suivant les objectifs de l'expérience. Suivant les cas, il peut s'agir d'un témoin avec les pratiques du viticulteur, un témoin sans apport, et dans les essais de protection phytosanitaire on parle de témoin de vraisemblance ou de témoin non traité (ou TNT). Il est donc nécessaire de décrire précisément le traitement "Témoin" pour éviter toute mauvaise interprétation des résultats.
 
 ```{r}
 #| echo: false
@@ -237,7 +237,7 @@ Le dispositif en lui-même peut être décrit par quelques métadonnées (@tbl-m
 knit_table(df=schema,context="design")
 ```
 
-Chaque parcelle unitaire (ou élémentaire) peut être définie par quelques champs de métadonnées proposés dans le @tbl-metadata_subplot ci-dessous. Les coordonnées relatives des parcelles unitaires peuvent être précisées mais dépendent du point de référence choisi par l'expérimentateur, souvent pour des considérations pratiques (accès de la parcelle). Les renseigner permet toutefois de générer le plan d'expérience et de tenir compte de leur position relative dans l'espace pour une représentation et spatiales des données.
+Chaque parcelle unitaire (ou élémentaire) peut être définie par quelques champs de métadonnées proposés dans le @tbl-metadata_subplot ci-dessous. Les coordonnées relatives des parcelles unitaires peuvent être précisées mais dépendent du point de référence choisi par l'expérimentateur, souvent pour des considérations pratiques (accès de la parcelle). Les renseigner permet toutefois de générer le plan d'expérience et de tenir compte de leur position relative dans l'espace pour une représentation spatiale des données.
 
 ```{r}
 #| echo: false
@@ -269,7 +269,7 @@ knit_table(df=schema,context="estate")
 ::: callout-important
 ## Données à caractère personnel
 
-Attention, certaines données (noms, géolocalisation précise des parcelles) peuvent être des données à caractère personnel (DCP) et dans ce cas doivent respecter le Règlement Général sur la Protection des Données (RGPD). Un des principes du RGPD est de recueillir le consentement explicite et éclairée des personnes pour tout traitement des données à caractère personnel. En l'absence de ce consentement, il faudra **supprimer** ou **anonymiser** les DCP.
+Attention, certaines données (noms, géolocalisation précise des parcelles) peuvent être des données à caractère personnel (DCP) et dans ce cas doivent respecter le Règlement Général sur la Protection des Données (RGPD). Un des principes du RGPD est de recueillir le consentement explicite et éclairé des personnes pour tout traitement des données à caractère personnel. En l'absence de ce consentement, il faudra **supprimer** ou **anonymiser** les DCP.
 :::
 
 ## La parcelle expérimentale
@@ -350,7 +350,7 @@ knit_table(df=schema,context="event")
 
 library(dplyr)
 library(kableExtra)
-termes<-c("parcelle","dispositif expérimental","parcelle unitaire","traitement","boc","protocole",
+termes<-c("parcelle","dispositif expérimental","parcelle unitaire","traitement expérimental","boc","protocole",
           "unité d'observation","placette",
           "modalité","facteur", "témoin",
           "témoin non traité (TNT)",
