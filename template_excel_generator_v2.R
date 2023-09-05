@@ -34,8 +34,14 @@ add_sheet2template <- function(entity,wb)
   # selection of cols to export to excel
   selection=c("label_fr","valeur") ## list of cols you want
   metadata_selected <- metadata %>% select(all_of(selection))
+  metadata_selected_t <- as.data.frame(t(metadata_selected[,-1]))
+  ### add an * if required
+  label <- metadata_selected$label_fr
+  metadata$required[is.na(metadata$required)]<-0 ##
+  label[metadata$required==1]<-paste0(label[metadata$required==1],"*")
+  colnames(metadata_selected_t) <- label
 
-  ### to check if a sheets "listes" exists and to extract the number of cols of this sheet
+    ### to check if a sheets "listes" exists and to extract the number of cols of this sheet
   if ("listes" %in% wb$sheet_names)
   {
     numlist <- ncol(openxlsx::readWorkbook(wb,sheet="listes"))
@@ -46,31 +52,26 @@ add_sheet2template <- function(entity,wb)
   }
 
   openxlsx::addWorksheet(wb,sheet=entity)
-  openxlsx::writeDataTable(wb,sheet=entity,x=metadata_selected) # # copy metadata_selected to the sheet
-  openxlsx::setColWidths(wb, sheet = entity, cols = 1, widths = "auto") ## auto adjust of col width
+  openxlsx::writeDataTable(wb,sheet=entity,x=metadata_selected_t) # # copy metadata_selected to the sheet
+  openxlsx::setColWidths(wb, sheet = entity, cols = c(1:ncol(metadata_selected_t)), widths = "auto") ## auto adjust of col width
   #s1 <- createStyle(fontSize = 12, fontColour = "red", textDecoration = c("BOLD")) ## create style for the comment
   #s_required <- createStyle(fontColour = "red",textDecoration = c("BOLD")) ## create style for required field
   champs<-metadata$property
 
-  ncolval <- which(selection=="valeur") ## num of values col
+  #ncolval <- which(selection=="valeur") ## num of values col
   for (i in 1:length(champs))
   {
     ## add comment for description
     c1 <- openxlsx::createComment(metadata$description[i],visible=F) ## create comment
-    openxlsx::writeComment(wb,sheet=entity,col=ncolval-1,row=i+1,comment=c1) ## write the comment in cell "name"
+    openxlsx::writeComment(wb,sheet=entity,col=i,row=1,comment=c1) ## write the comment in cell "name"
 
     ## add comment for example (disabled : better to have a example file)
     # c_ex <- openxlsx::createComment(metadata$example[i],visible=F) ## create comment
     # openxlsx::writeComment(wb,sheet=entity,col=ncolval,row=i+1,comment=c_ex) ## write the comment in cell "name"
 
-    ## add variable name to the label_fr
-    createNamedRegion(wb,sheet=entity,cols=ncolval-1,rows=i+1,
-                      name = metadata$property[i])
-
-    ### apply style if required
-    if(!is.na(metadata$required[i]) && metadata$required[i]==1) {openxlsx::writeData(wb,sheet=entity,startCol=ncolval-1,startRow=i+1,
-                                                                                     colNames = F,
-                                                                                     x=paste0(metadata$label_fr[i],"*"))} ## to add * to identificate required fields
+    ## add named region to the cols (arbitrary 100 rows)
+    createNamedRegion(wb,sheet=entity,cols=i,rows=2:100,
+                      name = metadata$property[i]) #
 
     ### add list
     enum_i <- metadata$enumList[metadata$property==champs[i]]
@@ -82,24 +83,26 @@ add_sheet2template <- function(entity,wb)
       colnames(list_df)<-champs[i]
       # Add drop-down values dataframe to the sheet "Drop-down values"
       writeData(wb, sheet = "listes", x = list_df, startCol = numlist)
-      # add validation to sheet
-      openxlsx::dataValidation(wb,sheet=entity,col=ncolval,rows=i+1,type="list",
+      # add validation to sheet (arbitrary 100 rows)
+      openxlsx::dataValidation(wb,sheet=entity,col=i,rows=2:100,type="list",
                                value=paste0("'listes'!$",LETTERS[numlist],"$",2,":$",LETTERS[numlist],"$",nrow(list_df)+1))
     } else {}
+
+    ## add min and max values
     range<-c(metadata$minimum[metadata$property==champs[i]],metadata$maximum[metadata$property==champs[i]])
       if (length(na.omit(range))==2)
     {
-      openxlsx::dataValidation(wb,sheet=entity,col=ncolval,rows=i+1,type="decimal",
+      openxlsx::dataValidation(wb,sheet=entity,col=i,rows=2:100,type="decimal",
                              operator = "between", value = range)
       } else {
         if (!is.na(range[1]))
         {
-          openxlsx::dataValidation(wb,sheet=entity,col=ncolval,rows=i+1,type="decimal",
+          openxlsx::dataValidation(wb,sheet=entity,col=i,rows=2:100,type="decimal",
                                    operator = "greaterThan", value = range[1])
         }
         if (!is.na(range[2]))
         {
-          openxlsx::dataValidation(wb,sheet=entity,col=ncolval,rows=i+1,type="decimal",
+          openxlsx::dataValidation(wb,sheet=entity,col=i,rows=2:100,type="decimal",
                                    operator = "lessThan", value = range[1])
         }
         } # end of else
@@ -117,7 +120,7 @@ entities <- schema %>% filter (core=="true") %>% select(name) %>% unique
 #entities <- unique(schema$name)
 entities <- na.omit(entities)
 
-ordered_entity <- c("person","project","experimentation","design","factor","data_dictionnary","field","estate","soil","itk","annotation")
+ordered_entity <- c("person","project","experimentation","design","factor","treatment","data_dictionnary","field","estate","soil","itk","annotation")
 
 
 for (i in 1:length(ordered_entity))
