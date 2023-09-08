@@ -24,8 +24,9 @@ library(dplyr)
 #' @examples
 add_sheet2template <- function(entity,wb)
 {
-  metadata <- schema %>%
-    filter(name == entity) %>% # filter metadata you want
+  metadata <- schema[grep(entity,strsplit(schema$name, split=",", fixed = TRUE)),] ## to filter metadata for the entity
+  metadata <- metadata %>%
+    #filter(name == entity) %>% # filter metadata you want
     filter (core=="true") %>% # filter only "core" metadata
     mutate(valeur="") %>% # add an empty col for future values
     arrange(order) ### to arrange by col order
@@ -116,7 +117,9 @@ wb <- openxlsx::createWorkbook()  ## create a new workbook
 
 # liste sheet ------------------------------------------------------------
 ## add a sheet for each entity
-entities <- schema %>% filter (core=="true") %>% select(name) %>% unique
+entities <- unique(unlist(strsplit(schema$name[schema$core=="true"], split=",", fixed = TRUE)))
+
+#schema %>% filter (core=="true") %>%  select(name) %>% unique
 #entities <- unique(schema$name)
 entities <- na.omit(entities)
 
