@@ -70,6 +70,7 @@ add_sheet2template <- function(entity,wb)
     # c_ex <- openxlsx::createComment(metadata$example[i],visible=F) ## create comment
     # openxlsx::writeComment(wb,sheet=entity,col=ncolval,row=i+1,comment=c_ex) ## write the comment in cell "name"
 
+
     ## add named region to the cols (arbitrary 100 rows)
     createNamedRegion(wb,sheet=entity,cols=i,rows=2:100,
                       name = metadata$property[i]) #
@@ -113,7 +114,6 @@ add_sheet2template <- function(entity,wb)
 }
 
 ### create template
-wb <- openxlsx::createWorkbook()  ## create a new workbook
 
 # liste sheet ------------------------------------------------------------
 ## add a sheet for each entity
@@ -123,15 +123,28 @@ entities <- unique(unlist(strsplit(schema$name[schema$core=="true"], split=",", 
 #entities <- unique(schema$name)
 entities <- na.omit(entities)
 
-ordered_entity <- c("person","project","experimentation","design","factor","treatment","data_dictionnary","field","estate","soil","itk","annotation")
+ordered_entity <- c("person","project","experimentation","design","moda","treatment_xp","data_dictionnary","field","estate","soil","itk","annotation")
 
 
+wb <- openxlsx::createWorkbook()  ## create a new workbook
 for (i in 1:length(ordered_entity))
 {
   wb <- add_sheet2template(entity=ordered_entity[i], wb = wb)
 }
 
 # wb <- add_sheet2template(entity="itk", wb = wb)
+
+### adding soil texture triangle
+insertImage(wb, "soil", "TriangleTextureGEPPA17cl.png", startRow = 5, startCol = 3,
+            width = 13, height = 12, units = "cm")
+
+### addig a help page
+openxlsx::addWorksheet(wb,sheetName = "HELP")
+writeDataTable(wb,sheet="HELP", x= schema %>%
+                 filter (core=="true") %>%
+                 select(name,label_fr,description,example,help),
+               bandedRows = T)
+
 
 # saving wb ---------------------------------------------------------------
 options(openxlsx.dateFormat = "yyyy-mm-dd")
