@@ -123,7 +123,7 @@ entities <- unique(unlist(strsplit(schema$name[schema$core=="true"], split=",", 
 #entities <- unique(schema$name)
 entities <- na.omit(entities)
 
-ordered_entity <- c("person","project","experimentation","design","moda","treatment_xp","data_dictionnary","field","estate","soil","itk","annotation")
+ordered_entity <- c("person","project","experimentation","design","moda","treatment_xp","data_dictionary","field","estate","soil","itk","annotation")
 
 
 wb <- openxlsx::createWorkbook()  ## create a new workbook
