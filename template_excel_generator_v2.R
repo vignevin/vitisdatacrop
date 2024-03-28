@@ -73,7 +73,7 @@ add_sheet2template <- function(entity,wb)
 
     ## add named region to the cols (arbitrary 100 rows)
     createNamedRegion(wb,sheet=entity,cols=i,rows=2:100,
-                      name = metadata$property[i]) #
+                      name = paste(entity,metadata$property[i],sep=".")) #
 
     ### add list
     enum_i <- metadata$enumList[metadata$property==champs[i]]
