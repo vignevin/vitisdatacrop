@@ -4,3 +4,12 @@
 .Ruserdata
 InventaireChampsSI.xlsx
 standard.accdb
+guide_remplissage_standard.docx
+jsonschema_generator.R
+report_template.docx
+report_template.qmd
+schema.json
+schema_amenagements_cyclables.json
+test_report_auto.R
+vitisdatacrop.Rproj
+automaticReport.R
