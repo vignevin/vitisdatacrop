@@ -140,11 +140,27 @@ insertImage(wb, "soil", "TriangleTextureGEPPA17cl.png", startRow = 5, startCol =
 
 ### addig a help page
 openxlsx::addWorksheet(wb,sheetName = "HELP")
-writeDataTable(wb,sheet="HELP", x= schema %>%
-                 filter (core=="true") %>%
-                 select(name,label_fr,description,example,help),
-               bandedRows = T)
 
+# add new column that manually constructs Excel hyperlink formula
+# note backslash is required for quotes to appear in Excel
+schema_help <- schema %>%
+  mutate(
+    link = ifelse(is.na(link),"",paste0(
+      "HYPERLINK(\"",
+      link,
+      "\", \"",
+      link,
+      "\")"
+    ))) %>%
+  filter (core=="true") %>%
+  select(name,label_fr,description,example,link,comment)
+
+# specify column as formula per openxlsx::writeFormula option #2
+class(schema_help$link) <- "formula"
+
+writeDataTable(wb,sheet="HELP", x= schema_help,
+               bandedRows = T)
+#setColWidths(wb, sheet = "HELP", cols = 1:5, widths = "auto")
 
 # saving wb ---------------------------------------------------------------
 options(openxlsx.dateFormat = "yyyy-mm-dd")
